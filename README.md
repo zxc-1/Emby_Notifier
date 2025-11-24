@@ -30,7 +30,7 @@
   - [3.1 环境要求](#31-环境要求)
   - [3.2 代码目录结构示例](#32-代码目录结构示例)
 - [4. docker-compose 部署](#4-docker-compose-部署)
-  - [4.1 使用 DockerHub 镜像的 docker-composeyaml](#41-使用-dockerhub-镜像的-docker-composeyml)
+  - [4.1 使用 DockerHub 镜像的 docker-compose.yaml](#41-使用-dockerhub-镜像的-docker-composeyml)
   - [4.2 从源码构建的 docker-composeyaml](#42-从源码构建的-docker-composeyml)
 - [5. 配置项说明（环境变量）](#5-配置项说明环境变量)
   - [5.1 Telegram 设置](#51-telegram-设置)
