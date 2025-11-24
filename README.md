@@ -8,7 +8,7 @@
     <img src="https://img.shields.io/badge/Repo-Emby__Notifier-blue?style=flat-square&logo=github" alt="Repo">
   </a>
   <a href="https://github.com/zxc-1/Emby_Notifier">
-    <img src="https://img.shields.io/github/stars/zxc-1/Emby_Notifier?style=flat-square&label=Stars" alt="GitHub Stars">
+    <img src="https://img.shields.io/github/stars/zxc-1/Emby-Notifier?style=flat-square&label=Stars" alt="GitHub Stars">
   </a>
   <a href="https://github.com/zxc-1/Emby_Notifier/issues">
     <img src="https://img.shields.io/github/issues/zxc-1/Emby_Notifier?style=flat-square" alt="GitHub Issues">
