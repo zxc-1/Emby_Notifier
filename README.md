@@ -4,14 +4,14 @@
 支持 **多模块解耦 / 成人识别 / FanArt 优先 / 剧集打包推送** 等功能。
 
 <p align="center">
-  <a href="https://github.com/zxc-1/Emby-Notifier">
+  <a href="https://github.com/zxc-1/Emby_Notifier">
     <img src="https://img.shields.io/badge/Repo-Emby--Notifier-blue?style=flat-square&logo=github" alt="Repo">
   </a>
-  <a href="https://github.com/zxc-1/Emby-Notifier">
-    <img src="https://img.shields.io/github/stars/zxc-1/Emby-Notifier?style=flat-square&label=Stars" alt="GitHub Stars">
+  <a href="https://github.com/zxc-1/Emby_Notifier">
+    <img src="https://img.shields.io/github/stars/zxc-1/Emby_Notifier?style=flat-square&label=Stars" alt="GitHub Stars">
   </a>
-  <a href="https://github.com/zxc-1/Emby-Notifier/issues">
-    <img src="https://img.shields.io/github/issues/zxc-1/Emby-Notifier?style=flat-square" alt="GitHub Issues">
+  <a href="https://github.com/zxc-1/Emby_Notifier/issues">
+    <img src="https://img.shields.io/github/issues/zxc-1/Emby_Notifier?style=flat-square" alt="GitHub Issues">
   </a>
   <a href="https://hub.docker.com/r/dala666x/emby-notifier">
     <img src="https://img.shields.io/badge/Docker-dala666x%2Femby--notifier-blue?style=flat-square&logo=docker" alt="Docker Hub">
