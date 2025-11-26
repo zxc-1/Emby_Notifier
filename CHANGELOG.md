@@ -1,5 +1,23 @@
 # Changelog
 
+# Changelog
+
+
+## v1.2.2
+
+### 变更
+
+- 移除基于路径配置的成人识别规则：
+  - 删除 `Settings.ADULT_ROOTS` / `Settings.ADULT_KEYWORDS` 等配置项。
+  - 删除工具函数 `is_adult_path`，成人判断全部收敛到统一的智能函数 `is_adult_content`。
+  - `is_adult_content` 仍然可以把实际文件路径当作一个弱信号来源（例如包含 `porn` / `hentai` / `jav`），但不再依赖可配置的路径规则。
+
+- 取消剧集聚合推送逻辑：
+  - 删除 `EpisodeBatch` 及其后台刷新任务，不再在内存中聚合剧集。
+  - `/emby-webhook` 中不再区分剧集是否进入聚合队列，所有条目统一按“单条即时推送”处理。
+  - 移除 `EPISODE_BATCH_WINDOW` / `EPISODE_BATCH_TICK` 配置，以及 docker-compose 中对应的环境变量。
+
+
 ## v1.2.1
 
 ### 新增
