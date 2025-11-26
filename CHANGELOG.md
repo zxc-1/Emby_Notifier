@@ -1,7 +1,5 @@
 # Changelog
 
-# Changelog
-
 
 ## v1.2.2
 
