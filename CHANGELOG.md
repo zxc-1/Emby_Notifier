@@ -1,6 +1,6 @@
 # Changelog
 
-## v1.2.2
+## v1.2.0
 
 - 成人判定：
   - 移除基于路径的成人规则（删除 ADULT_ROOTS / ADULT_KEYWORDS / is_adult_path）。
