@@ -1,5 +1,46 @@
 # Changelog
 
+v1.3.0 
+
+核心改动
+	•	Webhook 处理从同步改为「入队 + 后台 worker」
+	•	新增内存队列和多协程 worker（NotificationWorker）
+	•	新增配置：NOTIFIER_MAX_QUEUE_SIZE、NOTIFIER_WORKER_CONCURRENCY
+	•	Emby 回调更快返回，不再被 TMDB / Telegram 阻塞
+	•	新增 Webhook 鉴权
+	•	新增环境变量：WEBHOOK_SECRET
+	•	支持从请求头或 ?token= 校验，不匹配返回 401
+	•	TMDB / Telegram 调用更稳
+	•	TMDB：增加重试 + 简单内存缓存，减轻限流/抖动影响
+	•	Telegram：发送消息增加重试，支持 DRY_RUN（只打日志不真正发送）
+
+成人识别
+	•	在原有 is_adult_content 启发式规则基础上，新增“强制覆盖”配置：
+	•	ADULT_FORCE_LIBRARIES / ADULT_IGNORE_LIBRARIES
+	•	ADULT_FORCE_PATH_PREFIXES / ADULT_IGNORE_PATH_PREFIXES
+	•	先按库名/路径前缀强制判定，再走原有打分逻辑
+
+mediainfo & 入库信息
+	•	保留 1.2.0 的 mediainfo 轮询等待机制（60s / 5s 间隔）
+	•	解析逻辑模块化，继续支持：
+	•	分辨率 / 编码 / 码率 / 时长
+	•	音轨语言
+	•	片头 IntroStart/IntroEnd → ⏩片头M:SS
+
+配置 & 日志
+	•	新增 Settings 配置类，集中管理所有环境变量，启动时做基本校验
+	•	统一 logging 格式与等级控制（LOG_LEVEL）
+
+部署（Docker）
+	•	Dockerfile：
+	•	使用非 root 用户运行
+	•	新增 /health 健康检查
+	•	依赖版本范围收紧（FastAPI / httpx 等）
+	•	建议配合 .env + .dockerignore 管理密钥和构建上下文
+
+模版（推送文本样式）在最初 1.3.0 里有过调整，后续可以通过保留 1.2.0 模版 + 兼容新参数的方式细化成 1.3.1/1.3.2 的改动。
+
+
 ## v1.2.0
 
 - 成人判定：
