@@ -1,5 +1,71 @@
 # Changelog
 
+## v2.0.0
+
+### 架构重构
+
+- 引入统一数据模型（`notifier/models.py`），替代散落在各处的 `Dict[str, Any]`：
+  - `EmbyItem`、`LocalMeta`、`NfoMeta`、`MediaInfo` / `MediaInfoVideo` / `MediaInfoAudio`、`TmdbMeta`、`NotificationContent` 等。
+- 抽象通知通道接口 `Notifier`（`notifier/notifiers/base.py`），当前实现：
+  - `TelegramNotifier`（`notifier/notifiers/telegram.py`）
+  - `DummyNotifier`：DRY_RUN 模式使用，只打印日志不发送真实消息。
+- HTTP 客户端统一为全局 `httpx.AsyncClient`（`notifier/http_clients.py`），由 FastAPI lifespan 生命周期创建和关闭。
+
+### 元数据处理
+
+- Emby 元数据提取整理为 `extract_local_meta`（`notifier/metadata/emby_meta.py`），输出强类型 `LocalMeta`。
+- NFO 解析抽象为 `parse_av_nfo`（`notifier/metadata/av_nfo.py`），返回 `NfoMeta`，并在服务层按字段合并到 `LocalMeta`。
+- Mediainfo 轮询与解析重写为 `load_mediainfo_with_wait`（`notifier/metadata/mediainfo.py`）：
+  - 支持多候选 JSON 文件；
+  - 单个 JSON 解析失败不影响其他候选；
+  - 轮询超时和错误都有详细日志。
+- TMDB 访问重构为 `fetch_tmdb_for`（`notifier/metadata/tmdb_client.py`）：
+  - 先按 TMDB ID 查询，不行再按「标题 + 年份」搜索；
+  - 通过带 TTL 和容量上限的缓存 `_TTLCache` 降低重复请求。
+
+### 通知与模板
+
+- 引入模板渲染层 `notifier/templates/`：
+  - 通过 `TemplateRenderer`（`notifier/templates/__init__.py`）统一入口；
+  - 中文模板实现 `zh_cn.render_notification`，基于 `LocalMeta/TmdbMeta/MediaInfo` 生成最终 `NotificationContent`。
+- Telegram 通知实现支持：
+  - 优先发送本地 fanart 图片（`NotificationContent.fanart_path`）；
+  - 其次使用 TMDB 封面 URL；
+  - 最后退化为纯文本消息；
+  - 所有错误均有结构化日志输出。
+
+### 配置与安全
+
+- 配置系统改为 `pydantic-settings`（`notifier/config.py`）：
+  - 所有配置集中在 `Settings` 类；
+  - 启动时通过 `validate_required()` 校验必需项，缺失直接抛错阻止启动；
+  - 提供 `is_telegram_configured` 等快捷属性。
+- Webhook 安全：
+  - 支持 `WEBHOOK_SECRET`，来自 header `X-Webhook-Token` / `X-Emby-Webhook-Token` 或 query `token` 的简单鉴权；
+  - 支持 `WEBHOOK_ALLOWED_IPS`，可配置来源 IP 白名单。
+- 新增成人识别策略配置（`ADULT_FORCE_LIBRARIES`、`ADULT_IGNORE_LIBRARIES`、`ADULT_FORCE_PATH_PREFIXES`、`ADULT_IGNORE_PATH_PREFIXES`），在 `is_adult_content` 中统一处理。
+
+### Worker 与健康检查
+
+- Worker 重写为 `NotificationWorker`（`notifier/worker.py`）：
+  - 使用有上限的 `asyncio.Queue`；
+  - 支持配置并发消费者数量；
+  - 队列满时拒绝新任务并记错误日志；
+  - 提供 `queue_size` / `max_queue_size` / `running_workers` 等运行时指标。
+- `/health` 接口增强（`app.py`）：
+  - 返回应用版本、Worker 运行状态、队列长度、并发数、Telegram 配置及 DRY_RUN 状态。
+- FastAPI 应用改为使用 lifespan 管理资源：
+  - 启动时创建全局 HTTP 客户端和 Worker；
+  - 停止时优雅关闭 Worker 和 HTTP 客户端。
+
+### 其他
+
+- logging 初始化统一放在 `app.py`，库代码不再主动修改全局 logging 配置。
+- 更新 `requirements.txt`，引入 `pydantic` 与 `pydantic-settings` 依赖。
+
+
+
+
 ## v1.3.0
 
 - 类型 / 数据模型：
