@@ -2,6 +2,9 @@
 
 ## v1.3.0
 
+- 类型 / 数据模型：
+  - 仍然以 `Dict[str, Any]` 方式传递 Emby Item 和内部元数据，本版本暂未引入统一的 Pydantic / dataclass 模型，该问题保留到后续版本处理。
+
 - Webhook / 任务处理：
   - Webhook 改为「写队列 + 后台 worker」处理，避免长时间阻塞。
   - 新增内存队列和多 worker 并发，支持配置：
