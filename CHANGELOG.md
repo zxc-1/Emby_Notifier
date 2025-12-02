@@ -1,6 +1,74 @@
 # Changelog
 
-2.1.0 主要变更点：
+
+
+## 1.3.0
+
+- 全面引入 Pydantic 数据模型，替代过去的 `Dict[str, Any]` 传递：
+  - `EmbyItem` / `LocalMeta` / `TmdbMeta` / `MediaInfo` / `NotificationContext`。
+- 抽象通知通道接口 `Notifier`，当前实现 `TelegramNotifier`，为后续多通道扩展铺路。
+- 新增共享 `httpx.AsyncClient`，通过 `http_client.py` 管理，避免重复建连。
+- 重写 Mediainfo 轮询与解析逻辑：
+  - 单个 JSON 解析失败不再影响其它候选；
+  - 详细日志记录错误文件路径与原因。
+- Health Check 增强：
+  - `/health` 返回 JSON，包含版本、队列长度、worker 并发、Telegram 配置状态等。
+- 配置层改为 `BaseSettings`：
+  - 启动阶段做硬校验，必要配置缺失会直接阻止服务启动。
+- TMDB 客户端缓存改为 LRU，限制最大条数，同时保留 TTL 逻辑。
+- Webhook 安全加强：支持 `WEBHOOK_ALLOWED_IPS` 白名单，并改进鉴权日志。
+- Worker 增加队列指标与优雅退出逻辑。
+- 模板层改为使用 `NotificationContext`，为后续多语言支持做准备。
+- logging 初始化从库代码移至 `app.py`，避免影响宿主应用。
+- 新增单元测试与 mypy/ruff 配置样板。
+
+
+## 1.3.0
+
+### 新增 / 改动
+
+- 推送模版重写：
+  - 分为三种：🔞 AV、#剧集、#电影。
+  - 抬头统一：
+    - AV：`🔞 注意车速：番 {code} 已就绪，系好安全带`
+    - 普通：`🛰 Emby · 新资源已抵达 · 正在为您呈现` + `#剧集/#电影`
+  - 简介、标签、综合评分按约定空行，排版固定。
+
+- AV 支持多来源评分：
+  - 解析 NFO 中 `<rating>`、`<criticrating>`、`<ratings><rating name="javdb" ...>`。
+  - 显示一行综合评分（换算成 10 分制）+ 一行评分明细。
+
+- 标签 / 演员优化（AV）：
+  - 标签过滤掉 `片商:`、`系列:`、`导演:`、`演员:` 等前缀和无意义词。
+  - 标签去重，最多展示 12 个。
+  - 演员显示前 3 人：`A / B / C 等`。
+
+- Mediainfo 扩展：
+  - 同时支持：
+    - 旧版 `{"media":{"track":[...]}}` JSON。
+    - Emby 生成的 `[{"MediaSourceInfo": {...}}]` JSON。
+  - `.strm` 场景支持 `xxx-mediainfo.json` 命名（与现有文件对齐）。
+
+- 普通剧集 / 电影信息补全：
+  - 新增展示：入库时间、规格（分辨率 / 大小 / 编解码）、演员。
+  - 语言支持从 TMDB `spoken_languages` 补全。
+  - 外链改为带 URL 列表：TMDB / IMDB / 豆瓣。
+
+- 海报逻辑调整：
+  - AV：本地 fanart → NFO `<cover>`。
+  - 剧集/电影：本地 `fanart.jpg` → Emby Primary 图 → TMDB 海报兜底。
+  - 成人条目不再请求 TMDB。
+
+### 修复
+
+- 修复 Emby 风格 mediainfo JSON 报错 `list object has no attribute 'get'`。
+- 修复 `.strm` 同目录已有 `*-mediainfo.json` 却始终提示找不到 mediainfo 的问题。
+- 修复部分 AV 标签混入“片商/系列”等前缀、演员列表为空导致显示异常的问题。
+
+
+
+
+##1.3.0
 	1.	Telegram 通道
 	•	修复本地图片发送时参数丢失的问题（json+files → data+files）。
 	2.	通知 Worker
@@ -13,7 +81,7 @@
 	•	鉴权失败时只输出 token 前缀，而不是明文。
 
 
-## v2.0.0
+## 1.3.0
 
 ### 架构重构
 
@@ -142,7 +210,7 @@
   - 其他 AV 模板结构保持不变（片名行、下方信息照旧）。
 
 
-## v1.2.0-test
+## v1.2.0
 
 ### 新增
 
