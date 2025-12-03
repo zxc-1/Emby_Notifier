@@ -75,8 +75,6 @@ docker compose up -d
 
 ## 2. 环境变量说明
 
-所有配置项都来自 `notifier/config.py`，支持 `.env` 与环境变量。
-
 ### 2.1 Telegram
 
 | 变量名           | 必填 | 默认值   | 说明                           |
@@ -108,7 +106,6 @@ docker compose up -d
 | `WEBHOOK_SECRET`     | 否   | 无     | Webhook 鉴权令牌，配置后必须携带正确 token                |
 | `WEBHOOK_ALLOWED_IPS`| 否   | 空     | 允许访问的源 IP 列表，逗号分隔；为空则不做 IP 限制       |
 
-校验逻辑在 `app.py` 的 `_verify_webhook` 中实现：
 
 - 若配置了 `WEBHOOK_SECRET`，请求必须满足其一：
   - Header `X-Webhook-Token: <secret>`  
@@ -117,8 +114,6 @@ docker compose up -d
 - 若配置了 `WEBHOOK_ALLOWED_IPS`，则只允许来自这些 IP 的请求通过。
 
 ### 2.5 队列与重试
-
-这些是我们在对话中新增/强调的部分，已经在代码中实现：
 
 | 变量名                         | 必填 | 默认值 | 说明                                                       |
 | ------------------------------ | ---- | ------ | ---------------------------------------------------------- |
