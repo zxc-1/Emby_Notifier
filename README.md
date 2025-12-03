@@ -145,8 +145,6 @@ networks:
     driver: bridge
 ```
 
-> 如果 Emby 与本服务在同一 docker 网络，`EMBY_BASE_URL` 中可以使用容器名 `emby`。  
-
 ---
 
 ## 5. 配置项说明（环境变量）
