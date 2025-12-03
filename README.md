@@ -83,7 +83,6 @@ docker compose up -d
 | ----------------| ---- | -------- | ------------------------------ |
 | `TG_BOT_TOKEN`  | 是   | 无       | Telegram 机器人 Token          |
 | `TG_CHAT_ID`    | 是   | 无       | 接收通知的频道/群 ID（多为负数）|
-| `TG_PARSE_MODE` | 否   | Markdown | 消息格式：Markdown / HTML 等   |
 
 ### 2.2 Emby / TMDB
 
@@ -92,10 +91,6 @@ docker compose up -d
 | `EMBY_BASE_URL`     | 是   | 无     | Emby 地址（对容器可访问）                 |
 | `EMBY_API_KEY`      | 是   | 无     | Emby 后台生成的 API Key                  |
 | `TMDB_API_KEY`      | 否   | 无     | TMDB API Key，不配置则不访问 TMDB        |
-| `TMDB_LANGUAGE`     | 否   | zh-CN  | TMDB 语言                                 |
-| `TMDB_REGION`       | 否   | CN     | TMDB 区域                                 |
-| `TMDB_CACHE_TTL`    | 否   | 3600   | TMDB 缓存时间（秒）                       |
-| `TMDB_CACHE_MAX_SIZE`| 否  | 512    | TMDB 缓存条目上限                         |
 
 ### 2.3 mediainfo
 
