@@ -112,29 +112,59 @@ version: "3.8"
 
 services:
   emby_notifier:
-    image: dala666x/emby_notifier:latest
+    image: dala666x/emby_notifier:latest          # 或你自己 build 的镜像名
     container_name: emby_notifier
     restart: unless-stopped
-    environment:
-      # Telegram
-      - TG_BOT_TOKEN=1234567890:AAxxxxxxxxxxxxxxxxxxxxxxxxxxx
-      - TG_CHAT_ID=-1001234567890
-
-      # Emby
-      - EMBY_BASE_URL=http://emby:8096
-      - EMBY_API_KEY=xxxxxxxxxxxxxxxxxxxx
-
-      # TMDB（可选）
-      - TMDB_API_KEY=xxxxxxxxxxxxxxxxxxxx
-
-      # 可选：队列与重试参数（不配则使用默认值）
-      - NOTIFIER_MAX_QUEUE_SIZE=200
-      - NOTIFIER_WORKER_CONCURRENCY=3
-      - NOTIFIER_MAX_RETRY=3
-      - NOTIFIER_RETRY_BACKOFF_BASE=2.0
-
     ports:
-      - "8000:8000"
+      - "8000:8000"                               # 左边是宿主机端口，可改；右边容器固定 8000
+    environment:
+      # ============ 基础 ============
+      # 时区（可选，默认镜像自己的时区；建议显式设为自己所在时区）
+      - TZ=Asia/Shanghai
+
+      # ============ Telegram（必填） ============
+      # Telegram Bot Token（必填）
+      - TG_BOT_TOKEN=1234567890:AA_xxx_xxx_xxx
+      # Telegram Chat ID（必填，频道/群 ID，通常是负数）
+      - TG_CHAT_ID=-1001234567890
+      # 消息解析模式（可选，默认 Markdown）
+      # - TG_PARSE_MODE=Markdown  # 可选，默认 Markdown，可改为 HTML
+
+      # ============ Emby（必填） ============
+      # Emby 对 emby_notifier 容器可访问的地址（必填）
+      # 如果 Emby 也在同一个 compose 里，可以用 http://emby:8096
+      - EMBY_BASE_URL=http://emby:8096
+      # Emby 后台生成的 API Key（必填）
+      - EMBY_API_KEY=your_emby_api_key_here
+
+      # ============ TMDB（可选） ============
+      # TMDB API Key（可选，不配置则不使用 TMDB，默认关闭）
+      # - TMDB_API_KEY=your_tmdb_api_key_here  # 可选，无默认值
+
+      # ============ mediainfo 等待配置（可选） ============
+      # 不配置时使用代码默认：MEDIAINFO_TIMEOUT=30 秒，MEDIAINFO_INTERVAL=1.0 秒
+      # 等待 mediainfo json 生成的最大时间（秒）
+      # - MEDIAINFO_TIMEOUT=30     # 可选，默认 30 秒
+      # 检查间隔（秒），避免过于频繁读盘
+      # - MEDIAINFO_INTERVAL=1.0   # 可选，默认 1.0 秒
+
+      # ============ 队列与重试（可选） ============
+      # 通知任务队列最大长度；超过后新的 webhook 返回 QUEUE_FULL
+      # 不配置时默认 100
+      # - NOTIFIER_MAX_QUEUE_SIZE=200          # 可选，默认 100
+      # 并发 worker 数量，不配置默认 3
+      # - NOTIFIER_WORKER_CONCURRENCY=3        # 可选，默认 3
+      # 单条任务失败时最大重试次数，不配置默认 3
+      # - NOTIFIER_MAX_RETRY=3                 # 可选，默认 3
+      # 重试基础退避时间（秒）：2 -> 4 -> 8 ...；不配置默认 2.0
+      # - NOTIFIER_RETRY_BACKOFF_BASE=2.0      # 可选，默认 2.0 秒
+      # 是否只打印不发送（调试用），true/false；不配置默认 false（正常发送）
+      # - NOTIFIER_DRY_RUN=false               # 可选，默认 false
+
+      # ============ Webhook 安全（可选） ============
+      # 允许的 Emby 源 IP 列表，逗号分隔；留空表示不限制（默认不限制）
+      # - WEBHOOK_ALLOWED_IPS=192.168.1.10,192.168.1.11  # 可选，默认不限制
+
 ```
 
 > 如果 Emby 与本服务在同一 docker 网络，`EMBY_BASE_URL` 中可以使用容器名 `emby`。  
