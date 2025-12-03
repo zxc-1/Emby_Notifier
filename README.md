@@ -108,41 +108,44 @@ docker build -t emby_notifier:local .
 示例 `docker-compose.yaml`：
 
 ```yaml
-version: "3.8"
+version: "3.9"
 
 services:
   emby_notifier:
-    image: dala666x/emby_notifier:latest
+    image: dala666x/emby_notifier:latest        # 或改成你自己的镜像名
     container_name: emby_notifier
     restart: unless-stopped
     ports:
-      - "8000:8000"              # 左：宿主机端口，可改；右：容器固定 8000
+      - "8000:8000"                             # Emby Webhook: http://宿主机IP:8000/emby/webhook
     environment:
-      # 必填：Telegram
-      - TG_BOT_TOKEN=1234567890:AA_xxx_xxx_xxx   # 机器人 Token
-      - TG_CHAT_ID=-1001234567890                # 频道/群 ID（一般为负数）
+      # ===== 必填：Telegram =====
+      - TG_BOT_TOKEN=your_telegram_bot_token    # 必填
+      - TG_CHAT_ID=-1001234567890               # 必填：频道/群 ID（一般为负数）
 
-      # 必填：Emby
-      - EMBY_BASE_URL=http://emby:8096           # Emby 对容器可访问地址
-      - EMBY_API_KEY=your_emby_api_key_here      # Emby API Key
+      # ===== 必填：Emby =====
+      - EMBY_BASE_URL=http://emby:8096          # 必填：Emby 地址（对本容器可访问）
+      - EMBY_API_KEY=your_emby_api_key          # 必填：Emby API Key
 
-      # 可选：TMDB（默认关闭）
-      # - TMDB_API_KEY=your_tmdb_api_key_here
+      # ===== 可选：基础配置 =====
+      - TZ=Asia/Shanghai                        # 可选，默认镜像自身时区
 
-      # 可选：mediainfo（默认：TIMEOUT=30, INTERVAL=1.0）
-      # - MEDIAINFO_TIMEOUT=30
-      # - MEDIAINFO_INTERVAL=1.0
+      # ===== 可选：TMDB =====
+      # - TMDB_API_KEY=your_tmdb_api_key        # 可选，不配置则不使用 TMDB（默认关闭）
 
-      # 可选：队列与重试（默认：100 / 3 / 3 / 2.0）
-      # - NOTIFIER_MAX_QUEUE_SIZE=100
-      # - NOTIFIER_WORKER_CONCURRENCY=3
-      # - NOTIFIER_MAX_RETRY=3
-      # - NOTIFIER_RETRY_BACKOFF_BASE=2.0
-      # - NOTIFIER_DRY_RUN=false
+      # ===== 可选：mediainfo 等待策略 =====
+      # - MEDIAINFO_TIMEOUT=30                  # 可选，默认 30 秒
+      # - MEDIAINFO_INTERVAL=1.0                # 可选，默认 1.0 秒
 
-networks:
-  default:
-    driver: bridge
+      # ===== 可选：队列与重试 =====
+      # - NOTIFIER_MAX_QUEUE_SIZE=100           # 可选，默认 100
+      # - NOTIFIER_WORKER_CONCURRENCY=3         # 可选，默认 3
+      # - NOTIFIER_MAX_RETRY=3                  # 可选，默认 3
+      # - NOTIFIER_RETRY_BACKOFF_BASE=2.0       # 可选，默认 2.0 秒
+      # - NOTIFIER_DRY_RUN=false                # 可选，默认 false（正常发送）
+
+    volumes:
+      # 把 Emby 使用的媒体/strm 根目录映射进容器，方便读取 .strm / mediainfo / nfo
+      - /path/to/your/media/root:/media:ro
 ```
 
 ---
