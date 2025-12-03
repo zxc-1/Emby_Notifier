@@ -33,7 +33,7 @@
   - [5.1 Telegram 设置](#51-telegram-设置)
   - [5.2 Emby 相关](#52-emby-相关)
   - [5.3 TMDB 相关（可选）](#53-tmdb-相关可选)
-  - [5.4 mediainfo 等待策略](#54-mediainfo-等待策略)
+  - [5.4 mediainfo 等待策略(可选)](#54-mediainfo-等待策略)
   - [5.5 通知队列与重试（可选）](#55-通知队列与重试可选)
 - [6. 启动与验证](#6-启动与验证)
 - [7. Emby Webhook 配置](#7-emby-webhook-配置)
