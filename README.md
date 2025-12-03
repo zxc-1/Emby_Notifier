@@ -65,8 +65,6 @@ services:
       - /path/to/your/media/root:/media:ro
 ```
 
-> 建议把敏感信息放在 `.env` 文件中，然后在 `docker-compose.yml` 里写成 `TG_BOT_TOKEN: ${TG_BOT_TOKEN}` 这种形式。
-
 启动：
 
 ```bash
