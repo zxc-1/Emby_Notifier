@@ -165,44 +165,6 @@ http://你的服务器IP:8000/emby/webhook?token=你的WEBHOOK_SECRET
 ```text
 GET /health
 ```
-
-结合我们加的 metrics 模块，典型返回类似：
-
-```jsonc
-{
-  "status": "ok",
-  "version": "1.4.0",
-  "worker": {
-    "running": true,
-    "queue_size": 0,
-    "max_queue_size": 100,
-    "concurrency": 3
-  },
-  "telegram": {
-    "configured": true,
-    "dry_run": false
-  },
-  "metrics": {
-    "counters": {
-      "webhook_received": 12,
-      "webhook_invalid_json": 1,
-      "enqueue_success": 11,
-      "enqueue_dropped_full": 0,
-      "notify_success": 10,
-      "notify_retry_scheduled": 2,
-      "notify_retry_enqueued": 2,
-      "notify_retry_dropped": 0,
-      "notify_failed_permanent": 1
-    },
-    "gauges": {
-      "queue_length": 0
-    }
-  }
-}
-```
-
-字段含义：
-
 ### 4.1 worker / telegram
 
 - `worker.running`：是否有 worker 在运行  
@@ -252,9 +214,4 @@ GET /health
 
 ---
 
-## 6. 开发 / 调试建议
-
-- 本地调试可以先设置：`NOTIFIER_DRY_RUN=true`，避免真实发消息；
-- 若要观察原始 Emby payload，可以在 `notifier/services.py` 中增加 debug 日志；
-- 若要修改成人识别/模板逻辑，可以从 `notifier/utils.py`、`notifier/templates/` 入手。
 
