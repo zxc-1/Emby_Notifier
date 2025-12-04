@@ -18,7 +18,8 @@
 - Telegram 推送稳定性优化：
   - `_post` 增加超时重试机制，短暂网络抖动时自动重试；
   - 超时仅输出 warning，减少大段 Traceback 日志噪音，失败仍自动降级为纯文字发送。
-
+- TMDB 请求增加超时重试，减少偶发超时导致无 TMDB 数据的情况。
+- 从 TMDB external_ids 回填 imdb_id 到本地，使 IMDb 外链在模板中正常显示。
 
 ## v1.3.0
 
