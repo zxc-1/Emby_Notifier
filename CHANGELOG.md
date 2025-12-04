@@ -2,8 +2,22 @@
 
 ## 1.3.1 - 2025-12-03
 
+### 新增
 - 为通知队列增加重试机制（支持最大重试次数与指数退避间隔配置）
 - 强化 /health 接口，返回通知队列与 webhook 的运行指标（metrics）
+- `/metrics` 接口：以 Prometheus 文本格式导出内部指标，用于监控。
+- Webhook 幂等去重：基于 `Item.Id + DateCreated` 等生成 key，短时间重复请求直接忽略。
+- Webhook 请求级日志：记录 `remote_ip`、`path`、`queue_ok`、`item_id`、`item_name`，便于排查。
+
+### 修复 / 优化
+- 豆瓣外链生成改为优先使用剧集名（SeriesName）+ 年份，避免带上整串文件名。
+- 若 Emby/NFO 无 `imdb_id`，自动使用 TMDB 返回的 `imdb_id` 作为兜底，增加 IMDB 外链出现率。
+- AV 模板评分展示调整：
+  - 综合行保持原有格式；
+  - 详细评分改用圆圈字母标识来源（Ⓛ/Ⓒ/Ⓙ/Ⓓ），并优化与演员区域的空行排版。
+- Telegram 推送稳定性优化：
+  - `_post` 增加超时重试机制，短暂网络抖动时自动重试；
+  - 超时仅输出 warning，减少大段 Traceback 日志噪音，失败仍自动降级为纯文字发送。
 
 
 ## v1.3.0
