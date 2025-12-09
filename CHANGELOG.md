@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.3.1 - 2025-12-03
+## 1.3.1 - 2025-12-09
 
 ### 新增
 - 为通知队列增加重试机制（支持最大重试次数与指数退避间隔配置）
@@ -8,6 +8,9 @@
 - `/metrics` 接口：以 Prometheus 文本格式导出内部指标，用于监控。
 - Webhook 幂等去重：基于 `Item.Id + DateCreated` 等生成 key，短时间重复请求直接忽略。
 - Webhook 请求级日志：记录 `remote_ip`、`path`、`queue_ok`、`item_id`、`item_name`，便于排查。
+- 可选的剧集聚合推送：通过 NOTIFIER_AGGREGATE_WINDOW / NOTIFIER_AGGREGATE_MAX_ITEMS 配置，对短时间内同一剧集的多集入库进行合并通知。
+- 新增调试接口：`/debug/render` 和 `/debug/last-notifications`，用于本地联调模板与通知内容（需开启 DEBUG_ENABLE_DEBUG_API）。
+- 指标扩展：增加 TMDB 命中率、Mediainfo 状态、按库名拆分的入库计数、成人 / 非成人内容计数等内部指标。
 
 ### 修复 / 优化
 - 豆瓣外链生成改为优先使用剧集名（SeriesName）+ 年份，避免带上整串文件名。
