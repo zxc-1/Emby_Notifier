@@ -2,20 +2,63 @@
 
 ## 1.4.0 - 2025-12-10
 
+
 ### 新增
+
 - **模板模块化**
-  - 原 `zh_cn.py` 拆分为：`zh_cn_common.py`、`zh_cn_av.py`、`zh_cn_series.py`、`zh_cn_movie.py`、`zh_cn.py`（路由），对外调用仍为 `render_notification(...)`。
+  - 将中文通知模板按类型拆分（AV / 剧集 / 电影 / 通用工具 / 路由入口），结构更清晰，外部仍通过 `render_notification(...)` 调用，行为不变。
+
+- **AV 模板**
+  - 独立 AV 渲染：番号、女优、片商、日期、标签、简介、外链等。
+  - 支持 `javdb` / `dmm` / `local` / `critic` 多来源评分合并，统一 10 分制。
+
+- **TMDB 匹配优化**
+  - 搜索结果采用打分选优（年份差、`vote_count`、`popularity`），统一用于电影和剧集，减少误匹配。
+
+- **去重配置化**
+  - 新增 `DEDUP_TTL_SECONDS`、`DEDUP_MAX_SIZE`，`Deduper` 从配置读取参数，便于按环境调节去重窗口与容量。
+
 - **剧集聚合通知**
-  - 新增 `AggregatingNotifier`，按 `NOTIFIER_AGGREGATE_WINDOW` 聚合同一剧集多集入库。
-  - 聚合消息在原剧集头部基础上增加：
-    - `批量入库：共 N 集`
-    - `明细：SxxEyy-SxxEzz` 或 `SxxE01 / SxxE03 / ...`
-    - 下方复用单集公共字段 + 外链 + `（本条消息由合并推送生成）`，保留海报。
+  - 新增 `AggregatingNotifier`，按 `NOTIFIER_AGGREGATE_WINDOW` / `NOTIFIER_AGGREGATE_MAX_ITEMS` 聚合同一剧集多集入库（仅 Episode）。
+  - 聚合消息在原剧集模板基础上增加“批量入库 + 明细”信息，复用首条单集的公共字段和外链，保留海报，并附简单聚合说明。
+
+- **调试接口与通知历史**
+  - 新增调试渲染接口（如 `/debug/render`），可本地模拟模板渲染。
+  - 通过 `DEBUG_NOTIFICATION_HISTORY_SIZE` 记录最近 N 条通知，便于查看实际推送内容。
+
+- **配置体系**
+  - 使用 `SettingsConfigDict` 适配 pydantic-settings v2。
+  - 聚合、去重、调试等新增配置项在 `Settings` 中显式声明，`.env` 仅覆盖默认值。
 
 ### 修复 / 优化
-- 去除对不存在字段的访问（如 `local.production_countries`、错误的 `bit_rate`），使用 `size_bytes` 等真实字段。
-- 字段访问统一增加兜底（`getattr(..., default)`），提升缺失元数据时的稳健性。
-- 在 `Settings` 中显式声明聚合相关配置，避免仅在 `.env` 配置时不生效的问题。
+
+- **字段与模型对齐**
+  - 移除不存在字段访问（如 `local.production_countries`、错误的 `bit_rate`），统一使用 `size_bytes` 等真实字段。
+  - 类别逻辑统一为 `region_bucket → country → library_name`，保持与旧行为一致。
+  - 模板字段访问统一使用 `getattr(..., default)` 兜底，避免 NFO / TMDB / Emby 字段缺失导致崩溃。
+
+- **模板与工具整理**
+  - 公共工具函数集中到通用模块，剧集 / 电影 / AV 共用，减少重复实现、统一展示风格。
+  - 大模板拆分为 AV / 剧集 / 电影三块，逻辑边界更清晰，维护成本更低。
+
+- **Mediainfo / TMDB / 请求健壮性**
+  - Mediainfo 增加命中 / 未命中 / 无候选统计与超时日志，便于排查路径或命名问题。
+  - TMDB 匹配失败或无候选时输出明确日志，方便定位命名 / 匹配问题。
+  - HTTP 请求统一使用共享 client，按配置设置超时与重试，提升大并发稳定性。
+
+- **去重逻辑**
+  - 明确去重键与 TTL 语义：TTL 内不重复推送，到期自动清理，避免内存膨胀。
+  - 可通过配置调整去重窗口与容量，适配不同规模媒体库。
+
+- **成人判定**
+  - 修复路径前缀匹配问题：要求使用真实路径前缀（如 `/media/小姐姐`），避免仅 `/小姐姐` 不生效。
+  - 新增按库名强制成人：`ADULT_FORCE_LIBRARIES=["小姐姐"]`，路径与库名规则并行工作。
+  - 整体逻辑为显式规则优先，其次启发式评分。
+
+- **日志与调试体验**
+  - 关键路径增加结构化日志：Mediainfo 状态、TMDB 匹配、去重命中、模板渲染异常等。
+  - 启用聚合时输出启动日志，方便确认配置生效。
+  - 精简早期聚合调试文案，推送内容更干净。
 
 
 ## 1.3.1 - 2025-12-09
