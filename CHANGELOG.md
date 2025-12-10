@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.4.0 - 2025-12-10
+
+### 新增
+- **模板模块化**
+  - 原 `zh_cn.py` 拆分为：`zh_cn_common.py`、`zh_cn_av.py`、`zh_cn_series.py`、`zh_cn_movie.py`、`zh_cn.py`（路由），对外调用仍为 `render_notification(...)`。
+- **剧集聚合通知**
+  - 新增 `AggregatingNotifier`，按 `NOTIFIER_AGGREGATE_WINDOW` 聚合同一剧集多集入库。
+  - 聚合消息在原剧集头部基础上增加：
+    - `批量入库：共 N 集`
+    - `明细：SxxEyy-SxxEzz` 或 `SxxE01 / SxxE03 / ...`
+    - 下方复用单集公共字段 + 外链 + `（本条消息由合并推送生成）`，保留海报。
+
+### 修复 / 优化
+- 去除对不存在字段的访问（如 `local.production_countries`、错误的 `bit_rate`），使用 `size_bytes` 等真实字段。
+- 字段访问统一增加兜底（`getattr(..., default)`），提升缺失元数据时的稳健性。
+- 在 `Settings` 中显式声明聚合相关配置，避免仅在 `.env` 配置时不生效的问题。
+
+
 ## 1.3.1 - 2025-12-09
 
 ### 新增
