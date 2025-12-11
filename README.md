@@ -185,7 +185,7 @@ services:
 
       # ========= Forward / MediaHelp 订阅外挂（可选）=========
       ENABLE_FORWARD_BRIDGE: "1"           # 启用 Forward 外挂模块
-      MEDIAHELP_BASE: "http://mediahelp:8091"  # 你的 MediaHelp 面板地址
+      MEDIAHELP_BASE: "http://IP:Port"  # 你的 MediaHelp 面板地址
       ENABLE_SEASON_FILTER: "1"            # 按季订阅模式：1=按季，0=整部剧
 
     volumes:
