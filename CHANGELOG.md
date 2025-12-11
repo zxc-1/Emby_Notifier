@@ -1,8 +1,23 @@
 # Changelog
 
+## 1.5.0 - 2025-12-12
+
+- Forward-Bridge 模块解耦：拆分为 `config/http_client/subscriptions/routes/notifications/models`，结构更清晰，原有 `/forward/...` 接口保持不变。
+- 新增 Forward-Bridge 配置：
+  - `FORWARD_BRIDGE_ENABLED`：总开关；
+  - `MEDIAHELP_BASE`：MediaHelp 地址（启用时必填）；
+  - `FORWARD_BRIDGE_TOKEN`：Header 鉴权；
+  - `FORWARD_BRIDGE_TOKEN_TTL`、`FORWARD_BRIDGE_SUB_CACHE_TTL`、`FORWARD_BRIDGE_DEBUG` 等。
+- 增强 MediaHelp 订阅能力：
+  - 支持按季订阅 / 按季取消（`selected_seasons` 为空视为全季订阅）；
+  - 订阅状态接口返回 `name/uuid/cron/seasons/full_season`，支持 `refresh=1` 强制刷新缓存。
+- 修复 MediaHelp 旧版接口兼容问题：
+  - 创建订阅恢复使用扁平 JSON 请求体，避免 `HTTP 400 Bad Request`；
+  - 日志去掉多余 `[ForwardBridge]` 前缀，推送模板补全失败场景（创建 / 更新 / 删除失败）。
+
+
+
 ## 1.4.0 - 2025-12-10
-
-
 ### 新增
 
 - **模板模块化**
