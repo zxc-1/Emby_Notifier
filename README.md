@@ -183,10 +183,14 @@ services:
       DEBUG_ENABLE_DEBUG_API: "0"          # 开启后 /debug/* 接口可用，默认关闭
       DEBUG_NOTIFICATION_HISTORY_SIZE: "50" # 最近通知缓存条数，仅调试使用
 
-      # ========= Forward / MediaHelp 订阅外挂（可选）=========
-      ENABLE_FORWARD_BRIDGE: "1"           # 启用 Forward 外挂模块
-      MEDIAHELP_BASE: "http://IP:Port"  # 你的 MediaHelp 面板地址
-      ENABLE_SEASON_FILTER: "1"            # 按季订阅模式：1=按季，0=整部剧
+            # ========= Forward / MediaHelp 订阅外挂（可选）=========
+      FORWARD_BRIDGE_ENABLED: "0"          # 是否启用 Forward / MediaHelp 外挂模块：1=启用，0=关闭
+      MEDIAHELP_BASE: "http://IP:Port"     # 你的 MediaHelp 面板地址（必填）
+      ENABLE_SEASON_FILTER: "0"            # 按季订阅模式：1=按季订阅，0=整部剧订阅
+      FORWARD_BRIDGE_TOKEN: "xxxx"         # （可选）Forward ➜ 本服务的鉴权 Token，配置后 Forward 需要在 Header 中带 X-Forward-Token
+      FORWARD_BRIDGE_TOKEN_TTL: "14400"    # （可选）MediaHelp 登录 Token 缓存时长（秒），默认 4 小时
+      FORWARD_BRIDGE_SUB_CACHE_TTL: "300"  # （可选）订阅列表缓存时长（秒），默认 300
+      FORWARD_BRIDGE_DEBUG: "0"            # （可选）是否开启调试接口 /forward/debug/sub-cache：1=开启，0=关闭
 
     volumes:
       # 把 Emby 使用的媒体/strm 根目录映射进容器，方便读取 .strm / mediainfo / nfo
@@ -297,32 +301,44 @@ services:
 
 > 如果你完全不用 Forward 客户端 + MediaHelp 订阅，可以忽略本小节。
 
-#### ENABLE_FORWARD_BRIDGE
+#### FORWARD_BRIDGE_ENABLED
 
 - 默认：`0`
 - 取值：
-  - `0`：关闭 Forward / MediaHelp 外挂功能（默认）。
+  - `0`：关闭 Forward / MediaHelp 外挂功能（Forward 相关接口会直接返回 503）。
   - `1`：开启外挂功能，在本服务中挂载一个 `/forward/...` 的子接口。
 - 作用：  
   开启后，你可以在 Forward 客户端中把订阅源指向 `http(s)://你的域名/forward/...`，  
-  由本项目转发、记录订阅操作，并通过 Telegram 推送相应的“订阅成功 / 已存在 / 取消订阅”等通知。
+  由本项目转发、记录订阅操作，并通过 Telegram 推送相应的“订阅成功 / 已存在 / 取消订阅 / 失败原因”等通知。
 
 #### MEDIAHELP_BASE
 
+- **必填**，无默认值。  
+- 填写 MediaHelp 面板的基础地址，Forward 外挂会通过这个地址去调用 MediaHelp 的 `/api/v1/subscription/...` 等接口。  
 - 示例：`http://mediahelp:8091`、`http://192.168.1.10:8091`
-- 说明：  
-  MediaHelp 面板的基础地址，Forward 外挂会通过这个地址去调用 MediaHelp 的 `/api/v1/subscription/...` 等接口。  
-  一般和你在浏览器访问 MediaHelp 的地址一致，只是把 `https` 或域名替换成容器内能访问到的形式即可。
 
 #### ENABLE_SEASON_FILTER
 
-- 默认：`1`
-- 取值：
-  - `1`：按季订阅模式（推荐），Forward 里点的是第几季，就只订阅这一季；
-  - `0`：整部剧订阅模式，存在订阅任务即视为全季订阅。
-- 说明：  
-  这个开关只影响“剧集”订阅逻辑，对电影订阅无影响。
+- 默认：`0`
+- 作用：
+  - `1`：按季订阅模式，Forward 订阅剧集时会在 MediaHelp 中维护 `selected_seasons` 列表；
+  - `0`：整部剧订阅模式，`selected_seasons` 为空，表示“全季订阅”，取消时直接删除整个任务。
 
+#### FORWARD_BRIDGE_TOKEN（可选）
+
+- 如果配置了该值，则所有 `/forward/api/v1/...` 请求都必须携带  
+  `X-Forward-Token: <FORWARD_BRIDGE_TOKEN>` 才会被接受。
+- 建议在公网部署时开启，用于防止未授权的 Forward 实例乱调用你的订阅接口。
+
+#### FORWARD_BRIDGE_TOKEN_TTL / FORWARD_BRIDGE_SUB_CACHE_TTL（可选）
+
+- `FORWARD_BRIDGE_TOKEN_TTL`：MediaHelp 登录 Token 的缓存时长（秒），默认 `14400`（4 小时）。
+- `FORWARD_BRIDGE_SUB_CACHE_TTL`：订阅列表缓存的刷新间隔（秒），默认 `300`。
+
+#### FORWARD_BRIDGE_DEBUG（可选）
+
+- `1`：开启 `/forward/debug/sub-cache` 等调试接口（仍受 `FORWARD_BRIDGE_TOKEN` 保护）。
+- `0`：关闭调试接口（默认）。
 
 ## 6. 启动与验证
 
