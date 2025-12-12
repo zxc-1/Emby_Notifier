@@ -138,6 +138,10 @@ services:
       # ========= Forward / MediaHelp 订阅外挂（可选）=========
       FORWARD_BRIDGE_ENABLED: "0"          # 是否启用 Forward / MediaHelp 外挂模块：1=启用，0=关闭
       MEDIAHELP_BASE: "http://IP:Port"     # 你的 MediaHelp 面板地址（必填）
+
+  volumes:
+      # 把 Emby 使用的媒体/strm 根目录映射进容器，方便读取 .strm / mediainfo / nfo
+      - /path/to/your/media/root:/media:ro
 ```
 
 ### 4.2 完整 docker-compose 示例（包含所有可选项）
