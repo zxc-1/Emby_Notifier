@@ -134,6 +134,10 @@ services:
 
       # 可选：Webhook 简单鉴权（Emby Webhook 里也要填同样的 token）
       WEBHOOK_SECRET: "emby-notifier-demo-secret"
+
+      # ========= Forward / MediaHelp 订阅外挂（可选）=========
+      FORWARD_BRIDGE_ENABLED: "0"          # 是否启用 Forward / MediaHelp 外挂模块：1=启用，0=关闭
+      MEDIAHELP_BASE: "http://IP:Port"     # 你的 MediaHelp 面板地址（必填）
 ```
 
 ### 4.2 完整 docker-compose 示例（包含所有可选项）
