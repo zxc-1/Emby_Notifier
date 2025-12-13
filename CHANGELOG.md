@@ -3,6 +3,7 @@
 ## [1.5.2] - 2025-12-13
 
 ### 新增
+- Forward 追加季后，自动调用 MediaHelp 订阅“立即执行”，新季立刻开始搜刮。
 - 封面等待策略-新增配置：
     - `EMBY_WAIT_FOR_IMAGE_ENABLED`
     - `EMBY_WAIT_FOR_IMAGE_MAX_WAIT`
