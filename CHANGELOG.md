@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.5.1] - 2025-12-13
+
+### 新增
+- MediaHelp 登录 token 支持落盘至 `/data/forward_mediahelp_state.json`，在 token 仍未过期的情况下，重启后可自动恢复登录状态，减少每次重启都要去 Forward 重新登录的情况。
+- Forward 相关通知统一采用双行结构：
+  - `📄 原因：...`
+  - `📝 说明：...`
+  针对常见错误（未登录、订阅已存在等）给出更直观的中文说明。
+
+### 修复
+- 电影 / 剧集 / AV 模板中的「📥 入库时间」现按容器本地时区显示（受 `TZ` 配置影响），不再出现比实际时间晚 8 小时的问题。
+- Forward 创建订阅时，TMDB 返回的相对 `poster_path` 现自动补全为完整 `https://image.tmdb.org/t/p/w500/...` URL，修复订阅列表中 Forward 订阅无海报的情况。
+- MediaHelp 接口错误信息不再直接透传整段后端返回（包含 detail/path/method 等），改为短句形式的 `HTTP 状态码 + code + message`，避免在通知中出现多余调试字段。
+
+### 优化
+- Forward → MediaHelp 创建订阅时的质量策略：
+  - 默认优先继承 MediaHelp 配置；
+  - 当默认值为 1080p 或未显式设置时，统一视为“自动最优”（auto），减少误锁分辨率导致的搜刮不到资源问题。
+- 日志隐私调整：支持通过下调第三方 logger（如 `httpx`, `uvicorn.access`）日志级别，避免在日志中打印包含 `api_key`、Telegram bot token、完整请求 URL 等敏感信息。
+- Forward 订阅逻辑中季订阅与全季订阅判断更清晰：已存在同 tmdb 的任务时优先追加季号或识别为全季订阅，避免重复创建相同任务。
+
+
+
 ## 1.5.0 - 2025-12-12
 
 - Forward-Bridge 模块解耦：拆分为 `config/http_client/subscriptions/routes/notifications/models`，结构更清晰，原有 `/forward/...` 接口保持不变。
