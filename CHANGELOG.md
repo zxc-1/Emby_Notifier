@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.5.2] - 2025-12-13
+
+### 新增
+- 封面等待策略-新增配置：
+    - `EMBY_WAIT_FOR_IMAGE_ENABLED`
+    - `EMBY_WAIT_FOR_IMAGE_MAX_WAIT`
+    - `EMBY_WAIT_FOR_IMAGE_INTERVAL`
+    - `_refetch_item_from_emby`、`_ensure_cover_with_optional_refetch`，在无封面时可短暂回查 Emby 再尝试选封面。
+    - Forward Bridge 日志脱敏，对 URL、IP、token、密码、用户名等敏感信息做打码处理
+
 ## [1.5.1] - 2025-12-13
 
 ### 新增
