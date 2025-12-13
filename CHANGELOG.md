@@ -8,16 +8,14 @@
     - `EMBY_WAIT_FOR_IMAGE_MAX_WAIT`
     - `EMBY_WAIT_FOR_IMAGE_INTERVAL`
     - `_refetch_item_from_emby`、`_ensure_cover_with_optional_refetch`，在无封面时可短暂回查 Emby 再尝试选封面。
-    - Forward Bridge 日志脱敏，对 URL、IP、token、密码、用户名等敏感信息做打码处理
-
-## [1.5.1] - 2025-12-13
-
-### 新增
+- Forward Bridge 日志脱敏，对 URL、IP、token、密码、用户名等敏感信息做打码处理
 - MediaHelp 登录 token 支持落盘至 `/data/forward_mediahelp_state.json`，在 token 仍未过期的情况下，重启后可自动恢复登录状态，减少每次重启都要去 Forward 重新登录的情况。
 - Forward 相关通知统一采用双行结构：
   - `📄 原因：...`
   - `📝 说明：...`
   针对常见错误（未登录、订阅已存在等）给出更直观的中文说明。
+
+## [1.5.1] - 2025-12-13
 
 ### 修复
 - 电影 / 剧集 / AV 模板中的「📥 入库时间」现按容器本地时区显示（受 `TZ` 配置影响），不再出现比实际时间晚 8 小时的问题。
