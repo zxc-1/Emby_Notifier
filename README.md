@@ -229,6 +229,9 @@ services:
 | --------------- | ------------------ | -------------------------------------- |
 | `EMBY_BASE_URL` | `http://IP:8096`   | Emby 面板地址（对容器可访问）          |
 | `EMBY_API_KEY`  | `xxxxxxxxxxxxxxxx` | Emby 后台生成的 API Key，用于访问资源 |
+| `EMBY_WAIT_FOR_IMAGE_ENABLED` | `true / false` | 是否在无封面时启用 Emby 回查等待策略，默认 true|
+| `EMBY_WAIT_FOR_IMAGE_MAX_WAIT` | `15`  | 无封面时最多等待的秒数，默认 15|
+| `EMBY_WAIT_FOR_IMAGE_INTERVAL` | `3 `  | 回查 Emby 间隔秒数，默认 3|
 
 **生成 Emby API Key：**
 
