@@ -180,7 +180,7 @@ services:
       DEDUP_MAX_SIZE: "2000"               # 去重缓存最大条数，默认 2000
 
       # ========= 聚合通知（剧集专用，可选）=========
-      NOTIFIER_AGGREGATE_WINDOW: "10"      # 聚合窗口秒数，默认 10
+      NOTIFIER_AGGREGATE_WINDOW: "60"      # 聚合窗口秒数，默认 60
       NOTIFIER_AGGREGATE_MAX_ITEMS: "20"   # 单条聚合消息最大包含条数，默认 20
 
       # ========= 其他行为 =========
