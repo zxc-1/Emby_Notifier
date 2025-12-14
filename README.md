@@ -124,11 +124,11 @@ services:
     environment:
       TZ: "Asia/Shanghai"
 
-      # Telegram 机器人配置
+      # （必填）Telegram 机器人配置
       TG_BOT_TOKEN: "1234567890:AAxxxxxxxxxxxxxxxxxxxx"
       TG_CHAT_ID: "-1001234567890"
 
-      # Emby 访问地址 & API Key
+      # （必填）Emby 访问地址 & API Key
       EMBY_BASE_URL: "http://emby:8096"
       EMBY_API_KEY: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
@@ -154,42 +154,34 @@ services:
     environment:
       TZ: "Asia/Shanghai"
 
-      # ========= Telegram 相关 =========
+      # （必填） Telegram 相关 
       TG_BOT_TOKEN: "1234567890:AAxxxxxxxxxxxxxxxxxxxx"
       TG_CHAT_ID: "-1001234567890"
 
-      # ========= Emby 相关 =========
+      # （必填） Emby 相关 
       EMBY_BASE_URL: "http://emby:8096"
       EMBY_API_KEY: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
  
-      # 可选：Emby 封面等待策略（提升刚入库媒体封面成功率）
+      # （可选）Emby 封面等待策略（提升刚入库媒体封面成功率）
       EMBY_WAIT_FOR_IMAGE_ENABLED: "true"     # 是否在无封面时短暂回查 Emby
       EMBY_WAIT_FOR_IMAGE_MAX_WAIT: "15"      # 最多等待秒数
       EMBY_WAIT_FOR_IMAGE_INTERVAL: "3"       # 每次回查间隔秒数
 
-      # Webhook 鉴权 & IP 白名单
+      # （可选）Webhook 鉴权 & IP 白名单
       WEBHOOK_SECRET: "emby-notifier-secret"           # Emby Webhook 里也要填同样的 token
       WEBHOOK_ALLOWED_IPS: "192.168.1.10,10.0.0.0/24"  # 可选：限制只能这些 IP 调用
 
-      # ========= worker / 队列 & 去重 =========
+      # （可选）worker / 队列 & 去重 
       NOTIFIER_WORKER_CONCURRENCY: "3"     # worker 数量，默认 3
       NOTIFIER_MAX_QUEUE_SIZE: "100"       # 队列最大长度，默认 100
       DEDUP_TTL_SECONDS: "3600"            # 去重缓存保留时长，默认 3600 秒
       DEDUP_MAX_SIZE: "2000"               # 去重缓存最大条数，默认 2000
 
-      # ========= 聚合通知（剧集专用，可选）=========
+      # （可选）聚合通知（剧集专用）
       NOTIFIER_AGGREGATE_WINDOW: "60"      # 聚合窗口秒数，默认 60
       NOTIFIER_AGGREGATE_MAX_ITEMS: "20"   # 单条聚合消息最大包含条数，默认 20
 
-      # ========= 其他行为 =========
-      NOTIFIER_DRY_RUN: "0"                # "1" 则只打日志不真正发 Telegram
-      WEBHOOK_TRUST_PROXY_HEADERS: "1"     # 反向代理下读取 X-Forwarded-For / X-Real-IP
-
-      # ========= 调试相关 =========
-      DEBUG_ENABLE_DEBUG_API: "0"          # 开启后 /debug/* 接口可用，默认关闭
-      DEBUG_NOTIFICATION_HISTORY_SIZE: "50" # 最近通知缓存条数，仅调试使用
-
-            # ========= Forward / MediaHelp 订阅外挂（可选）=========
+      # （可选）Forward / MediaHelp 订阅外挂
       FORWARD_BRIDGE_ENABLED: "0"          # 是否启用 Forward / MediaHelp 外挂模块：1=启用，0=关闭
       MEDIAHELP_BASE: "http://IP:Port"     # 你的 MediaHelp 面板地址（必填）
       ENABLE_SEASON_FILTER: "0"            # 按季订阅模式：1=按季订阅，0=整部剧订阅
@@ -197,6 +189,12 @@ services:
       FORWARD_BRIDGE_TOKEN_TTL: "14400"    # （可选）MediaHelp 登录 Token 缓存时长（秒），默认 4 小时
       FORWARD_BRIDGE_SUB_CACHE_TTL: "300"  # （可选）订阅列表缓存时长（秒），默认 300
       FORWARD_BRIDGE_DEBUG: "0"            # （可选）是否开启调试接口 /forward/debug/sub-cache：1=开启，0=关闭
+      
+      # （可选）调试相关 
+      NOTIFIER_DRY_RUN: "0"                # "1" 则只打日志不真正发 Telegram
+      WEBHOOK_TRUST_PROXY_HEADERS: "1"     # 反向代理下读取 X-Forwarded-For / X-Real-IP
+      DEBUG_ENABLE_DEBUG_API: "0"          # 开启后 /debug/* 接口可用，默认关闭
+      DEBUG_NOTIFICATION_HISTORY_SIZE: "50" # 最近通知缓存条数，仅调试使用
 
     volumes:
       # 把 Emby 使用的媒体/strm 根目录映射进容器，方便读取 .strm / mediainfo / nfo
