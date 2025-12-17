@@ -475,7 +475,7 @@ docker logs -f emby_notifier
 
 ---
 
-## 11. 数据持久化与从零重测
+## 11. 数据持久化
 
 本项目建议将 `/data` 挂载到 Docker volume，用于保存配置、登录信息、最近入库与海报缓存。典型文件如下：
 
@@ -486,28 +486,8 @@ docker logs -f emby_notifier
 - `/data/poster_cache/`：管理台/推送用海报缓存
 - `/data/forward_mediahelp_state.json`：Forward 登录态（token）缓存
 
-### 11.1 “从零重测”（清空所有持久化）
 
-如果你要完全清空配置与数据（包括管理员密码、Forward 登录态、最近入库、UI 设置）：
-
-```bash
-cd /path/to/emby_notifier
-docker compose down -v
-docker compose up -d --build
-```
-
-> `-v` 会删除该 compose 关联的数据卷（也就是清空 `/data`）。
-
-### 11.2 仅清空最近入库/外观（可选）
-
-仅清空最近入库与外观设置（保留其他配置），可删除对应文件后重启：
-
-```bash
-docker exec -it emby_notifier sh -c 'rm -f /data/recent_entries.json /data/ui_prefs.json'
-docker restart emby_notifier
-```
-
-### 11.3 配置与登录状态检查
+### 11.1 配置与登录状态检查
 
 在服务器执行下列命令，可快速确认持久化文件是否存在以及当前配置是否落盘：
 
