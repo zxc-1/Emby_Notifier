@@ -114,23 +114,18 @@ docker build -t emby_notifier:local .
 ```yaml
 services:
   emby_notifier:
+    image: dala666x/emby_notifier:latest
     container_name: emby_notifier
-    build: .
     restart: unless-stopped
     ports:
       - "8000:8000"
     environment:
       TZ: Asia/Shanghai
-      # 下面这些可以不写到 environment，管理台里保存后会写入 /data/.env.local 持久化
-      # TG_BOT_TOKEN: "xxxx"
-      # TG_CHAT_ID: "-100xxxxx"
-      # EMBY_BASE_URL: "http://emby:8096"
-      # EMBY_API_KEY: "xxxx"
 
     volumes:
       # 你的媒体/strm 根目录（只读即可）
       - /home/MediaHelp/strm:/media:ro
-      # v33 持久化数据（必须）
+      # 持久化数据（必须）
       - emby_notifier_data:/data
 
 volumes:
