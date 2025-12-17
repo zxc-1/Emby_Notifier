@@ -114,7 +114,6 @@ docker build -t emby_notifier:local .
 > 
 > 关键点：
 > - **/data 必须挂载到具名 volume 或宿主机目录**，否则“管理台设置/Forward 配置/最近入库”等无法持久化；
-> - 如果你想“从 0 重测”，只需要删掉这个 data volume（见后文“从 0 重测”章节）。
 
 ### 4.1. 推荐 docker-compose.yaml
 
