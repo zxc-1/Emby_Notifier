@@ -131,11 +131,7 @@ services:
 volumes:
   emby_notifier_data:
 ```
-
 >
-> ```yaml
-> image: dala666x/emby_notifier:latest
-> ```
 
 ## 5. 配置项说明（环境变量）
 
