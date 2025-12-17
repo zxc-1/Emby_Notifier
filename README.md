@@ -104,7 +104,6 @@ docker build -t emby_notifier:local .
 
 ## 4. docker-compose 部署
 
-> README 只保留 **v33** 的 compose 示例（已包含持久化卷）。
 > 
 > 关键点：
 > - **/data 必须挂载到具名 volume 或宿主机目录**，否则“管理台设置/Forward 配置/最近入库”等无法持久化；
