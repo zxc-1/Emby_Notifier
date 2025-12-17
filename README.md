@@ -132,7 +132,6 @@ volumes:
   emby_notifier_data:
 ```
 
-> 如果你不想 build 本地，也可以把 `build: .` 改成：
 >
 > ```yaml
 > image: dala666x/emby_notifier:latest
